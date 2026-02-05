@@ -8,7 +8,7 @@ os.environ["JAVA_HOME"] = r"C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hots
 java_bin = r"C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot\bin"
 os.environ["PATH"] = java_bin + os.pathsep + os.environ.get("PATH", "")
 
-# === Index 1: Titles only ===
+# Index 1: Titles only
 cmd_titles = [
     "python", "-m", "pyserini.index.lucene",
     "--collection", "JsonCollection",
@@ -27,7 +27,7 @@ print(result.stdout)
 if result.stderr:
     print("Errors:", result.stderr)
 
-# === Index 2: Title + Text ===
+# Index 2: Title + Text 
 cmd_title_text = [
     "python", "-m", "pyserini.index.lucene",
     "--collection", "JsonCollection",

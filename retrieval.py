@@ -9,9 +9,8 @@ java_bin = os.path.join(os.environ["JAVA_HOME"], "bin")
 os.environ["PATH"] = java_bin + os.pathsep + os.environ.get("PATH", "")
 os.environ["JPYPE_JVM_DLL"] = os.path.join(java_bin, "server", "jvm.dll")
 
-# -------------------------------
+
 # Experiments: only differ in the index
-# -------------------------------
 experiments = {
     "titles_only_index": "indexes/scifact_titles_only",
     "title_text_index": "indexes/scifact_title_text"
@@ -19,9 +18,8 @@ experiments = {
 
 query_file = "data/scifact/test_queries_odd.tsv"  # same for both
 
-# -------------------------------
+
 # Run retrieval
-# -------------------------------
 for exp_name, index_path in experiments.items():
     cmd = [
         "python", "-m", "pyserini.search.lucene",
