@@ -1,6 +1,10 @@
 import json
 import os
 
+# This file is responsible for the preprocessing of the documents.
+# The stopword removal and such are already done by pyserini. 
+#  Thus, we only split the document here.
+
 # input file for both 
 input_file = "data/scifact/corpus.jsonl"
 
