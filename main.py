@@ -20,7 +20,7 @@ import os
 #
 # Notable Changes:
 # - Added some comments to clarify code
-#
+# - Added .tsv support for the queries 
 #
 ##################################################################################
 
