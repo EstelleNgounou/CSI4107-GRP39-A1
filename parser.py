@@ -24,7 +24,7 @@ def parse_documents_from_file(file_path):
 
 def parse_query(query_line, json=True):
     """
-    Parse a single JSON line as a query
+    Parse a single JSON or .tsv line as a query
     """
     if json:
         query = json.loads(query_line)
@@ -47,7 +47,7 @@ def parse_query(query_line, json=True):
 
 def parse_queries_from_file(file_path):
     """
-    Read the JSON lines file and parse each query
+    Read the JSON or .tsv lines file and parse each query
     """
     if ".json" in file_path:
         with open(file_path, 'r', encoding='utf-8') as file:
