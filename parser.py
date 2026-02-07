@@ -22,26 +22,39 @@ def parse_documents_from_file(file_path):
         parsed_docs = [parse_document(line) for line in file]
     return parsed_docs
 
-def parse_query(query_line):
+def parse_query(query_line, json=True):
     """
     Parse a single JSON line as a query
     """
-    query = json.loads(query_line)
-    parsed_query = {
-        'num': query['_id'],
-        'title': query.get('text', 'NO_TEXT'),
-        'query': query.get('metadata', {}).get('query', 'NO_QUERY'),
-        'narrative': query.get('metadata', {}).get('narrative', 'NO_NARRATIVE'),
-        'url': query.get('metadata', {}).get('url', 'NO_URL')
-    }
+    if json:
+        query = json.loads(query_line)
+        parsed_query = {
+            'num': query['_id'],
+            'title': query.get('text', 'NO_TEXT'),
+            'query': query.get('metadata', {}).get('query', 'NO_QUERY'),
+            'narrative': query.get('metadata', {}).get('narrative', 'NO_NARRATIVE'),
+            'url': query.get('metadata', {}).get('url', 'NO_URL')
+        }
+    else:
+        split_line = query_line.split('\t')
+        parsed_query = {
+            'num': split_line[0],
+            'title': split_line[1],
+            'query': 'NO_QUERY',
+            'narrative': 'NO_NARRATIVE'
+        }
     return parsed_query
 
 def parse_queries_from_file(file_path):
     """
     Read the JSON lines file and parse each query
     """
-    with open(file_path, 'r', encoding='utf-8') as file:
-        parsed_queries = [parse_query(line) for line in file]
+    if ".json" in file_path:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            parsed_queries = [parse_query(line, True) for line in file]
+    elif ".tsv" in file_path:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            parsed_queries = [parse_query(line, False) for line in file]
     return parsed_queries
 
 

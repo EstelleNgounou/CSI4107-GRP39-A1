@@ -27,7 +27,7 @@ import os
 # path to existing dataset
 dataset = "data/scifact"  # Change to dataset being used
 doc_folder_path = dataset + '/corpus.jsonl'
-query_file_path = dataset + '/queries.jsonl'
+query_file_path = dataset + '/test_queries_odd.tsv'
 
 # names for files to be saved/created
 index_file_path = 'inverted_index.json'
@@ -40,7 +40,7 @@ print("Parsing documents")
 documents = []
 queries = parse_queries_from_file(query_file_path)
 
-# Preprocess documents and queries
+# Parse and preprocess documents
 if os.path.exists(preprocessed_docs_path):
     print("Loading preprocessed documents")
     documents = load_preprocessed_data(preprocessed_docs_path)
@@ -49,6 +49,8 @@ else:
     documents = parse_documents_from_file(doc_folder_path)
     documents = preprocess_documents(parse_documents_from_file(doc_folder_path))
     save_preprocessed_data(documents, preprocessed_docs_path)
+
+# Parse and preprocess queries
 if os.path.exists(preprocessed_queries_path):
     print("Loading preprocessed queries")
     queries = load_preprocessed_data(preprocessed_queries_path)
