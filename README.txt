@@ -28,7 +28,7 @@ First, create your Python environment with:
 $ python -m venv some_env_name
 
 Then, install the requirements with pip:
-$ pip install requirements.txt
+$ pip install -r requirements.txt
 
 Ensure you are in the same directory as the provided requirements.txt file.
 
@@ -39,8 +39,9 @@ $ python
 Python 3.9.6 (default, Dec  2 2025, 07:27:58) 
 >>>
 >>> import nltk
->>> nltk.download('stopwords', download_dir='some_env_name/nltk_data/')
->>> nltk.download('punkt_tab', download_dir='sme_env_name/nltk_data/')
+>>> nltk.download('stopwords')
+>>> nltk.download('punkt')
+
 
 This will download the two datasets into the Python environment. You may need to create the 'nltk_data' directory yourself.
 If you do not specify the download_dir argument, however, the datasets will be downloaded in your root user directory
