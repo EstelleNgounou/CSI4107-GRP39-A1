@@ -47,7 +47,7 @@ if os.path.exists(preprocessed_docs_path):
 else:
     print("Preprocessing documents")
     documents = parse_documents_from_file(doc_folder_path)
-    documents = preprocess_documents(parse_documents_from_file(doc_folder_path))
+    documents = preprocess_documents(documents)
     save_preprocessed_data(documents, preprocessed_docs_path)
 
 # Parse and preprocess queries
@@ -59,34 +59,64 @@ else:
     queries = preprocess_queries(parse_queries_from_file(query_file_path))
     save_preprocessed_data(queries, preprocessed_queries_path)
 
+queries = sorted(queries, key=lambda q: int(q['num']))
 start_time = time.time()
 
 # Build or load inverted index
-try:
-    inverted_index = load_inverted_index(index_file_path)
-    print("Inverted index loaded successfully.")
-except FileNotFoundError:
-    print("Inverted index not found, building a new one.")
-    inverted_index = build_inverted_index(documents)
-    save_inverted_index(inverted_index, index_file_path)
+#TITLE ONLY
+index_file_title = 'inverted_index_title.json'
+
+if os.path.exists(index_file_title):
+    inverted_index_title = load_inverted_index(index_file_title)
+else:
+    print("Building Title Only Inverted Index")
+    start_time = time.time()
+    inverted_index_title = build_inverted_index(documents, index_type = 'title_only')
     end_time = time.time()
-    print(f"Time taken to build inverted index: {end_time - start_time:.2f} seconds")
-
-doc_frequency = {word: len(docs) for word, docs in inverted_index.items()}
+    save_inverted_index(inverted_index_title,index_file_title)
+    
+doc_frequency = {word: len(docs) for word, docs in inverted_index_title.items()}
 sorted_words = sorted(doc_frequency.items(), key=lambda item: item[1], reverse=True)
-#print("Sample of Most Frequent Tokens: " + str(sorted_words[:20]))
+doc_lengths_title = calculate_document_lengths(documents)
 
-doc_lengths = calculate_document_lengths(documents)
+# FULL DOCUMENT
+index_file_full = 'inverted_index_full.json'
 
-results_file = "Results.txt"   #Change to Results.txt for TREC formatting
-start_time = time.time()
+if os.path.exists(index_file_full):
+    inverted_index_full = load_inverted_index(index_file_full)
+else:
+    print("Building Full Inverted Index")
+    start_time = time.time()
+    inverted_index_full = build_inverted_index(documents, index_type = 'full')
+    end_time = time.time()
+    save_inverted_index(inverted_index_full,index_file_full)
+
+doc_frequency = {word: len(docs) for word, docs in inverted_index_full.items()}
+sorted_words = sorted(doc_frequency.items(), key=lambda item: item[1], reverse=True)
+#print("Sample of Most Frequent Tokens: " + str(sorted_words[:10]))
+
+doc_lengths_full = calculate_document_lengths(documents)
+
 beir_results = {}
 
-print("Ranking and writing to results file")
-start_time = time.time()
-bm25 = BM25(inverted_index, doc_lengths)    #Uncomment these 2 lines
-writeResults(results_file, queries, bm25)   #To use the baseline BM25
 
+#Run 1: Title Only
+print("RUN 1 - TITLE ONLY")  
+bm25_title = BM25(inverted_index_title, doc_lengths_title) 
+results_file_title = "Results_Title.txt"
+start_time = time.time()
+writeResults(results_file_title, queries, bm25_title, top_k=100)
+end_time = time.time()
+print(f" Ranking complete in {end_time - start_time:.2f} seconds")
+
+#Run 2: Full Text  
+print("RUN 2 - FULL")
+bm25_full = BM25(inverted_index_full, doc_lengths_title) 
+results_file_title = "Results_Full.txt"
+start_time = time.time()
+writeResults(results_file_title, queries, bm25_full, top_k=100)
+end_time = time.time()
+print(f" Ranking complete in {end_time - start_time:.2f} seconds")
 #model_name = "BeIR/sparta-msmarco-distilbert-base-v1"
 #model_type = "sparta"
 

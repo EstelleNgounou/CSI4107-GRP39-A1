@@ -1,13 +1,20 @@
 import json
 
-def build_inverted_index(documents):
+def build_inverted_index(documents, index_type = 'full'):
     """
     Build an inverted index from the preprocessed documents
     """
     inverted_index = {}
     for doc in documents:
         doc_id = doc['DOCNO']
-        text_tokens = doc['TEXT']
+
+        if index_type == 'title_only':
+            text_tokens = doc['HEAD']
+        elif index_type == 'full':
+            text_tokens = doc['HEAD'] + doc['TEXT']
+        else:
+            raise ValueError("Unknow index_type")
+        
         for token in text_tokens:
             if token not in inverted_index:
                 inverted_index[token] = {}

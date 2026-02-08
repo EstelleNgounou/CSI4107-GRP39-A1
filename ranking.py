@@ -51,7 +51,7 @@ class BM25:
                     #print(doc_id)
                     if doc_id not in scores:
                         scores[doc_id] = 0
-                    scores[doc_id] += self.bm25_score(doc_id, query_terms)
+                    scores[doc_id] = self.bm25_score(doc_id, query_terms)
         return sorted(scores.items(), key=lambda item: item[1], reverse=True)
 
 def normalize_scores(ranked_docs):

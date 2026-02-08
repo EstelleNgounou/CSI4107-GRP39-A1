@@ -22,15 +22,32 @@ def progress_bar(current, total, bar_length=50):
     sys.stdout.write(text)
     sys.stdout.flush()
 
-def writeResults(results_file, queries, bm25):
-    beir_results = {}
-    results_timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    count = 1
+def writeResults(results_file, queries, bm25, query_type='full', top_k=100):
+     """
+     Args:
+        results_file: Output file path
+        queries: List of query dictionaries
+        bm25: BM25 ranking object
+        query_type: 'title' for title only, 'full' for title+query+narrative
+        top_k: Number of top results to write (default 100)
+    """
+     beir_results = {}
+     results_timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+     run_tag = f"BM25_{query_type}"
 
-    with open(results_file, 'w') as output_file:
+     #Sort queries by ID
+     sorted_queries = sorted(queries, key=lambda q: int(q['num']))
+     count = 1
+
+     with open(results_file, 'w') as output_file:
         for query in queries:
             query_id = query['num']
-            query_terms = query['title'] + query['query'] + query['narrative']
+            if query_type == 'title':
+                query_terms = query['title'] #title only
+            elif query_type == 'full':
+                query_terms = query['title'] + query['query'] + query['narrative'] #full query
+            else:
+                raise ValueError(f"Unknown query type")
             #print("Ranking Query " + str(query_id))
             progress_bar(count, len(queries))
             ranked_docs = bm25.rank_documents(query_terms)
@@ -41,8 +58,8 @@ def writeResults(results_file, queries, bm25):
                 beir_results[query_id] = [(doc_id, score) for doc_id, score in normalized_ranked_docs]
             else:
                 # Write results to file in TREC eval format
-                for rank, (doc_id, score) in enumerate(normalized_ranked_docs, start=1):
-                    result_line = f"{query_id} Q0 {doc_id} {rank} {score} {results_timestamp}\n"
+                for rank, (doc_id, score) in enumerate(normalized_ranked_docs[:top_k], start=1):
+                    result_line = f"{query_id} Q0 {doc_id} {rank} {score:.4f} {results_timestamp}\n"
                     output_file.write(result_line)
         if ('json' in results_file):
             json.dump(beir_results, output_file, indent=4)
