@@ -1,5 +1,5 @@
 COURSE CODE: CSI4107
-STUDENT NAMES: Estelle Ngounou (300269700), Matsuru Hoshi (300228879), Max Wang (300296800), Hassan Wanis ()
+STUDENT NAMES: Estelle Ngounou (300269700), Matsuru Hoshi (300228879), Max Wang (300296800), Hassan Wanis (300255946)
 
 TASK DIVISION:
 Estelle: Environment setup using Pyserini, Preprocessing, Indexing, Retrieval and Ranking
