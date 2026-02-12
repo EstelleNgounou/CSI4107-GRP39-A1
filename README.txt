@@ -3,7 +3,10 @@ STUDENT NAMES: Estelle Ngounou (300269700), Matsuru Hoshi (300228879), Max Wang 
 
 TASK DIVISION:
 Estelle: Environment setup using Pyserini, Preprocessing, Indexing, Retrieval and Ranking
-Matsuru:
+Matsuru: 
+- Set up and devised installation/running instructions.
+- Preprocessing - Added support for .tsv files on query input.
+- Ranking - Enabled bm25 ranking.
 Max:
 Wanis: MAP scores, Algorithm explanations, Discussion
 
@@ -26,6 +29,8 @@ Dependencies:
 
 First, create your Python environment with:
 $ python -m venv some_env_name
+
+Ensure the Python environment is activated before proceeding (see venv documentation, varies per system)
 
 Then, install the requirements with pip:
 $ pip install -r requirements.txt
