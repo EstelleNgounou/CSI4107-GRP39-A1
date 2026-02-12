@@ -7,8 +7,8 @@ Matsuru:
 - Set up and devised installation/running instructions.
 - Preprocessing - Added support for .tsv files on query input.
 - Ranking - Enabled bm25 ranking.
-Max:
-Wanis: MAP scores, Algorithm explanations, Discussion
+Max: Algorithm explanations
+Wanis: MAP scores, Discussion
 
 FUNCTIONALITIES OF THE PROGRAMS:
 
@@ -59,6 +59,26 @@ $ python main.py
 
 
 ALGORITHMS EXPLANATIONS:
+
+Step 1, Preprocessing: 
+
+To convert the raw text into a list of clean words, we first normalize the text, ensuring that the system 
+is not case-sensitive. We then use NLTK's tokenizer to convert the text into discrete linguistic units. Following this, we use the 
+Porter Stemmer to strip texts of suffixes and reduce words into a common base/root word. We finally filter out specific meta-tokens 
+and placeholders, leaving us with our preprocessed documents/queries containing all the tokens.
+
+Step 2, Indexing:
+
+The algorithm goes through the entire preprocessed list of documents once, and for every word processed, the system will note the 
+document number the word appears in, as well as the frequency of the word. Making use of nested dictionaries, this will allow the 
+system to find any word in constant time. Additionally, added an inverted index for only titles as required.
+
+Step 3, Retrieval and Ranking:
+
+When a query is entered, the system looks at the inverted index and finds only the documents that have at least one of the query's words. 
+For every matching document, we use BM25 to calculate a relevance score by looking at how rare a word is(idf) and how often it appears. 
+Afterwards, we use a min-max normalization algorithm to scale the scores between 0.0 and 1.0 and sort the documents according to their 
+new ranking.
 
 
 MEAN AVERAGE PRECISION (MAP):
