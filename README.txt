@@ -1,6 +1,6 @@
 COURSE CODE: CSI4107
 STUDENT NAMES: Estelle Ngounou (300269700), Matsuru Hoshi (300228879), Max Wang (300296800), Wanis Hassan (300255946)
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 TASK DIVISION:
 Estelle: Environment setup using Pyserini, Preprocessing, Indexing, Retrieval and Ranking
 Matsuru: 
@@ -9,7 +9,7 @@ Matsuru:
 - Ranking - Enabled bm25 ranking.
 Max: Algorithm explanations
 Wanis: System Stats and Results, MAP scores, Discussion
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 FUNCTIONALITIES OF THE PROGRAMS:
 
 This program does the following things:
@@ -19,7 +19,7 @@ This program does the following things:
  - Searches and ranks documents using the invertex index with BM25 ranking
 
 A list compiling results for a given set of queries in TREC format is outputted.
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 INSTRUCTIONS ON HOW TO RUN THE PROGRAMS:
 
 Dependencies:
@@ -55,7 +55,7 @@ somewhere under usr/lib/nltk_data (may differ for Windows). This should still wo
 Once this is done, the program can be run by running the main.py directly.
 
 $ python main.py
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 ALGORITHMS EXPLANATIONS:
 
 Step 1, Preprocessing: 
@@ -69,7 +69,7 @@ The algorithm goes through the entire preprocessed list of documents once, and f
 Step 3, Retrieval and Ranking:
 
 When a query is entered, the system looks at the inverted index and finds only the documents that have at least one of the query's words. For every matching document, we use BM25 to calculate a relevance score by looking at how rare a word is(idf) and how often it appears. Afterwards, we use a min-max normalization algorithm to scale the scores between 0.0 and 1.0 and sort the documents according to their new ranking.
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 SYSTEM STATS AND RESULTS:
 1. Vocabulary Size:
    45088 unique tokens.
@@ -103,7 +103,7 @@ Query ID: 3
 9. Doc 19497526 - Score: 0.8118
 10. Doc 19058822 - Score: 0.7785
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 MEAN AVERAGE PRECISION (MAP):
 We evaluated our system using the provided 'test.tsv' relevance judgments (Gold Standard) to calculate the Mean Average Precision (MAP) for two different indexing strategies.
 
@@ -112,7 +112,7 @@ We evaluated our system using the provided 'test.tsv' relevance judgments (Gold 
 
 2. Run 2 (Title + Abstract Text):
    MAP Score: 0.6310
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 DISCUSSION:
 Our results clearly demonstrate the impact of document length and content on retrieval performance.
 
