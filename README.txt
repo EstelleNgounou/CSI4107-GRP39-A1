@@ -3,12 +3,17 @@ STUDENT NAMES: Estelle Ngounou (300269700), Matsuru Hoshi (300228879), Max Wang 
 -----------------------------------------------------------------------------------------------------------------------------
 TASK DIVISION:
 
-Estelle: Environment setup using Pyserini, Preprocessing, Indexing, Retrieval and Ranking
+Estelle: At first I setup the Environment setup using Pyserini for the preprocessing, indexing, retrieval and ranking.
+When we switched to the IR files given, I corrected the instructions and set up the the preprocessing, indexing, retrieval 
+and ranking to compare the corpus to the queries based on full(text+title) and just the title.
+
 Matsuru: 
 - Set up and devised installation/running instructions.
 - Preprocessing - Added support for .tsv files on query input.
 - Ranking - Enabled bm25 ranking.
+
 Max: Algorithm explanations
+
 Wanis: System Stats and Results, MAP scores, Discussion
 -----------------------------------------------------------------------------------------------------------------------------
 FUNCTIONALITIES OF THE PROGRAMS:
@@ -61,22 +66,38 @@ ALGORITHMS EXPLANATIONS:
 
 Step 1, Preprocessing: 
 
-To convert the raw text into a list of clean words, we first normalize the text, ensuring that the system is not case-sensitive. We then use NLTK's tokenizer to convert the text into discrete linguistic units. Following this, we use the Porter Stemmer to strip texts of suffixes and reduce words into a common base/root word. We finally filter out specific meta-tokens and placeholders, leaving us with our preprocessed documents/queries containing all the tokens.
+To convert the raw text into a list of clean words, we first normalize the text, ensuring that the system is not 
+case-sensitive. We then use NLTK's tokenizer to convert the text into discrete linguistic units. Following this,
+we use the Porter Stemmer to strip texts of suffixes and reduce words into a common base/root word. 
+We finally filter out specific meta-tokens and placeholders, leaving us with our preprocessed documents/queries 
+containing all the tokens.
 
 Step 2, Indexing:
 
-The algorithm goes through the entire preprocessed list of documents once, and for every word processed, the system will note the document number the word appears in, as well as the frequency of the word. Making use of nested dictionaries, this will allow the system to find any word in constant time. Additionally, added an inverted index for only titles as required.
+The algorithm goes through the entire preprocessed list of documents once, and for every word processed, 
+the system will note the document number the word appears in, as well as the frequency of the word. Making use 
+of nested dictionaries, this will allow the system to find any word in constant time. Additionally, added an inverted 
+index for only titles as required.
 
 Step 3, Retrieval and Ranking:
 
-When a query is entered, the system looks at the inverted index and finds only the documents that have at least one of the query's words. For every matching document, we use BM25 to calculate a relevance score by looking at how rare a word is(idf) and how often it appears. Afterwards, we use a min-max normalization algorithm to scale the scores between 0.0 and 1.0 and sort the documents according to their new ranking.
+When a query is entered, the system looks at the inverted index and finds only the documents that have at 
+least one of the query's words. For every matching document, we use BM25 to calculate a relevance score by 
+looking at how rare a word is(idf) and how often it appears. Afterwards, we use a min-max normalization algorithm 
+to scale the scores between 0.0 and 1.0 and sort the documents according to their new ranking.
 -----------------------------------------------------------------------------------------------------------------------------
 SYSTEM STATS AND RESULTS:
 1. Vocabulary Size:
    45088 unique tokens.
 
 2. Sample of 100 Tokens:
-   ['.', 'of', 'the', 'and', ',', 'in', 'to', 'a', ')', '(', 'that', 'for', 'with', 'is', 'by', 'we', 'are', 'thi', 'as', 'from', 'an', 'on', 'cell', 'these', 'wa', 'result', 'or', 'studi', 'be', 'were', 'use', 'have', 'at', 'not', 'which', 'it', 'activ', 'but', ':', 'show', 'increas', 'express', 'function', 'also', 'ha', 'between', 'protein', 'effect', 'suggest', 'associ', 'here', 'been', 'may', 'develop', 'role', '%', 'gene', 'factor', 'can', 'both', 'their', 'includ', 'human', 'control', 'regul', 'diseas', ';', 'mechan', 'respons', 'identifi', 'patient', 'howev', 'data', 'than', 'differ', 'our', 'level', 'conclus', 'dure', 'provid', 'method', 'more', 'model', 'other', 'compar', 'all', 'into', 'demonstr', 'analysi', 'after', 'treatment', 'import', 'find', 'requir', 'two', 'target', 'induc', 'gener', 'potenti', 'specif']
+   ['.', 'of', 'the', 'and', ',', 'in', 'to', 'a', ')', '(', 'that', 'for', 'with', 'is', 'by', 'we', 'are', 'thi', 
+   'as', 'from', 'an', 'on', 'cell', 'these', 'wa', 'result', 'or', 'studi', 'be', 'were', 'use', 'have', 'at', 'not', 'which', 
+   'it', 'activ', 'but', ':', 'show', 'increas', 'express', 'function', 'also', 'ha', 'between', 'protein', 'effect', 'suggest', 
+   'associ', 'here', 'been', 'may', 'develop', 'role', '%', 'gene', 'factor', 'can', 'both', 'their', 'includ', 'human', 'control', 
+   'regul', 'diseas', ';', 'mechan', 'respons', 'identifi', 'patient', 'howev', 'data', 'than', 'differ', 'our', 'level', 'conclus', 
+   'dure', 'provid', 'method', 'more', 'model', 'other', 'compar', 'all', 'into', 'demonstr', 'analysi', 'after', 'treatment', 'import', 
+   'find', 'requir', 'two', 'target', 'induc', 'gener', 'potenti', 'specif']
 
 3. Sample Results (First 10 answers for the first 2 queries):
 
@@ -106,7 +127,8 @@ Query ID: 3
 
 -----------------------------------------------------------------------------------------------------------------------------
 MEAN AVERAGE PRECISION (MAP):
-We evaluated our system using the provided 'test.tsv' relevance judgments (Gold Standard) to calculate the Mean Average Precision (MAP) for two different indexing strategies.
+We evaluated our system using the provided 'test.tsv' relevance judgments (Gold Standard) to calculate the Mean Average 
+Precision (MAP) for two different indexing strategies.
 
 1. Run 1 (Title Only):
    MAP Score: 0.2981
@@ -118,10 +140,20 @@ DISCUSSION:
 Our results clearly demonstrate the impact of document length and content on retrieval performance.
 
 1. Title Only vs. Full Text Comparison:
-There is a significant performance gap between indexing only the titles (MAP 0.2981) and indexing the full abstract (MAP 0.6310). This is expected because scientific titles are often concise and may not contain the specific natural language keywords used in a query. The abstract provides necessary context and a larger vocabulary, allowing the BM25 algorithm to find more relevant matches that would otherwise be missed.
+There is a significant performance gap between indexing only the titles (MAP 0.2981) and indexing the full 
+abstract (MAP 0.6310). This is expected because scientific titles are often concise and may not contain the specific 
+natural language keywords used in a query. The abstract provides necessary context and a larger vocabulary, 
+allowing the BM25 algorithm to find more relevant matches that would otherwise be missed.
 
 2. Comparison to Baseline:
-Our best run (Full Text) achieved a MAP score of 0.6310. This slightly outperforms the BM25 baseline of 0.6012 in the provided "previous student report". This validates that our preprocessing pipeline and our BM25 implementation are functioning correctly and efficiently.
+Our best run (Full Text) achieved a MAP score of 0.6310. This slightly outperforms the BM25 baseline 
+of 0.6012 in the provided "previous student report". This validates that our preprocessing pipeline and our 
+BM25 implementation are functioning correctly and efficiently.
 
 3. Algorithms and Optimizations:
-As detailed in the algorithms section, we optimized our index size by applying stemming, which helped the system match words even if they had different endings. This kept our index size manageable and made our search results more accurate. We also chose BM25 instead of standard TF-IDF because it handles long documents better, it stops long abstracts from ranking too high just because they repeat a word, ensuring that the top results are actually the most relevant.
+As detailed in the algorithms section, we optimized our index size 
+by applying stemming, which helped the system match words even if they had different endings. 
+This kept our index size manageable and made our search results more accurate. We also chose BM25 
+instead of standard TF-IDF because it handles long documents better, it stops long abstracts from ranking 
+too high just because they repeat a word, ensuring that the top results are actually the most relevant.
+-----------------------------------------------------------------------------------------------------------------------------
