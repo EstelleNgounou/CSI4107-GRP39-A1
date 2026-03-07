@@ -22,9 +22,13 @@ def stem_tokens(tokens):
 def remove_extras(tokens):
     return [token for token in tokens if token not in ['no_queri', 'no_narr']]
 
+def remove_stop_words(tokens):
+    return [token for token in tokens if token not in stop_words]
+
 def preprocess_text(text):
     tokens = tokenize(text)
     tokens = stem_tokens(tokens)
+    token = remove_stop_words(tokens)
     tokens = remove_extras(tokens)
     return tokens
 
