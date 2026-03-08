@@ -37,7 +37,7 @@ A list compiling results for a given set of queries in TREC format is outputted.
 INSTRUCTIONS ON HOW TO RUN THE PROGRAMS:
 
 Dependencies:
-- Python (Tested on 3.9.6)
+- Python (Tested on 3.12.13)
 - Python Environment (venv)
 - requirements.txt (included)
 
