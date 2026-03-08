@@ -1,20 +1,28 @@
 COURSE CODE: CSI4107
 STUDENT NAMES: Estelle Ngounou (300269700), Matsuru Hoshi (300228879), Max Wang (300296800), Wanis Hassan (300255946)
 -----------------------------------------------------------------------------------------------------------------------------
+
+TO-DO:
+
+[X] Implement first neural retrieval model (10 points)
+[ ] Implement second neural retrieval model (10 points)
+[ ] For the best method, produce Results file with all test queries. (10 points)
+[ ] MAP and P@10 score for each method, and highlight the best scores. (5 points)
+[ ] Provide task division (5 points)
+[ ] Write a Readme, accounts for (15 points)
+
+-----------------------------------------------------------------------------------------------------------------------------
 TASK DIVISION:
 
-Estelle: At first I setup the Environment setup using Pyserini for the preprocessing, indexing, retrieval and ranking.
-When we switched to the IR files given, I corrected the instructions and set up the the preprocessing, indexing, retrieval 
-and ranking to compare the corpus to the queries based on full(text+title) and just the title.
+Estelle:
 
-Matsuru: 
-- Set up and devised installation/running instructions.
-- Preprocessing - Added support for .tsv files on query input.
-- Ranking - Enabled bm25 ranking.
+Matsuru:
+- Implemented Universal Sentence Transformer, technically loaded with SentenceTransformer 
+through BEIR. see documentation: https://github.com/beir-cellar/beir/blob/main/beir/retrieval/models/sentence_bert.py
 
-Max: Algorithm explanations
+Max: 
 
-Wanis: System Stats and Results, MAP scores, Discussion
+Wanis: 
 -----------------------------------------------------------------------------------------------------------------------------
 FUNCTIONALITIES OF THE PROGRAMS:
 

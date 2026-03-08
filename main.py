@@ -3,6 +3,7 @@ from parser import *
 from preprocessing import *
 from indexing import *
 from ranking import *
+from beir_ranking import rank_documents
 from utils import *
 import os
 
@@ -101,40 +102,35 @@ beir_results = {}
 
 
 #Run 1: Title Only
-print("RUN 1 - TITLE ONLY")  
-bm25_title = BM25(inverted_index_title, doc_lengths_title) 
-results_file_title = "Results_Title.txt"
-start_time = time.time()
-writeResults(results_file_title, queries, bm25_title, top_k=100)
-end_time = time.time()
-print(f" Ranking complete in {end_time - start_time:.2f} seconds")
+# print("RUN 1 - TITLE ONLY")  
+# bm25_title = BM25(inverted_index_title, doc_lengths_title) 
+# results_file_title = "Results_Title.txt"
+# start_time = time.time()
+# writeResults(results_file_title, queries, bm25_title, top_k=100)
+# end_time = time.time()
+# print(f" Ranking complete in {end_time - start_time:.2f} seconds")
 
-#Run 2: Full Text  
-print("RUN 2 - FULL")
-bm25_full = BM25(inverted_index_full, doc_lengths_title) 
-results_file_title = "Results_Full.txt"
-start_time = time.time()
-writeResults(results_file_title, queries, bm25_full, top_k=100)
-end_time = time.time()
-print(f" Ranking complete in {end_time - start_time:.2f} seconds")
+# #Run 2: Full Text  
+# print("RUN 2 - FULL")
+# bm25_full = BM25(inverted_index_full, doc_lengths_title) 
+# results_file_title = "Results_Full.txt"
+# start_time = time.time()
+# writeResults(results_file_title, queries, bm25_full, top_k=100)
+# end_time = time.time()
+# print(f" Ranking complete in {end_time - start_time:.2f} seconds")
 #model_name = "BeIR/sparta-msmarco-distilbert-base-v1"
 #model_type = "sparta"
 
-model_name = "msmarco-distilbert-base-v3"
-model_type = "sentence-bert"
+# model_name = "msmarco-distilbert-base-v3"
+# model_type = "sentence-bert"
 
-#model_name = "https://tfhub.dev/google/universal-sentence-encoder-qa/3"
-#model_type = "use-qa"
+model_name = "distiluse-base-multilingual-cased-v1"
+model_type = "use"
 
-#model_name = "dpr"
-#model_type = "dpr"
+results_file = "Results.txt"
+results = rank_documents(documents, queries, model_name=model_name, model_type=model_type, rerank=False)  # Set rerank=True for Cross-Encoder models
+end_time = time.time()
+save_results(results, results_file)
+print(f"\nTime taken to rank documents: {end_time - start_time:.2f} seconds")
 
-#model_name = "msmarco-roberta-base-ance-firstp"
-#model_type = "ance"
-
-# results = rank_documents(documents, queries, model_name=model_name, model_type=model_type, rerank=False)  # Set rerank=True for Cross-Encoder models
-# end_time = time.time()
-# save_results(results, results_file)
-# print(f"\nTime taken to rank documents: {end_time - start_time:.2f} seconds")
-
-# print(f"Ranking results written to {results_file}")
+print(f"Ranking results written to {results_file}")

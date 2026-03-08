@@ -1,6 +1,4 @@
 import math
-import datetime
-import json
 
 class BM25:
     def __init__(self, inverted_index, doc_lengths, k1=1.5, b=0.75, avgdl=None):
