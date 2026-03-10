@@ -13,7 +13,7 @@ def load_model(model_name, model_type, documents=None, inverted_index=None, doc_
             raise ValueError("Documents, inverted_index, and doc_lengths are required for BM25.")
         return BM25(inverted_index, doc_lengths)
     elif model_type == "use":
-        return DRES(models.SentenceBERT(model_name), batch_size=128)
+        return DRES(models.SentenceBERT(model_name), batch_size=64)
     else:
         raise ValueError(f"Unknown model type: {model_type}")
     
@@ -28,31 +28,58 @@ def combine_scores(scores1, scores2, weight1=0.5, weight2=0.5):
             combined_scores[doc_id] = scores2[doc_id] * weight2
     return combined_scores
 
-def rank_documents(documents, queries, model_name="BM25", model_type="BM25", rerank=False, inverted_index=None, doc_lengths=None):
-    model = load_model(model_name, model_type, documents, inverted_index, doc_lengths)
+def rank_documents(documents, queries, model_name, bm25_model, top_k_bm25=1000):
+
+    # Build corpus
     corpus = {}
     for doc in documents:
         corpus[doc['DOCNO']] = {
-            "text": " ".join(doc['HEAD']+doc['TEXT'])
+            "text": " ".join(doc['HEAD'] + doc['TEXT'])
         }
-    
-    # usa-qa uses dot product, bm25 scoring is None since already included in algorithm
-    score_function = "dot" if model_type != "bm25" else None
-    retriever = EvaluateRetrieval(model, score_function=score_function, k_values=[100])
-    
-    # Convert queries to the correct format
+
+    # Build query dict
     query_dict = {query['num']: " ".join(query['title'] + query['query'] + query['narrative']) for query in queries}
-    
-    if model_type == "bm25":
-        results = model.search(corpus, query_dict)
-    else:
-        results = retriever.retrieve(corpus, query_dict)
-    
-    if rerank:
-        reranker = Rerank(load_model("cross-encoder/ms-marco-electra-base", "cross-encoder"), batch_size=128)
-        results = reranker.rerank(corpus, query_dict, results, top_k=100)
-    
-    return results
+
+    # Step 1: BM25 retrieval
+    bm25_results = {}
+    for query in queries:
+        qid = query["num"]
+        tokens = query["title"] + query["query"] + query["narrative"]
+        ranked_docs = bm25_model.rank_documents(tokens)
+        bm25_results[qid] = {
+            doc_id: score for doc_id, score in ranked_docs[:top_k_bm25]
+        }
+
+    # Step 2: Dense retrieval over BM25 candidates only
+    model = DRES(models.SentenceBERT(model_name), batch_size=64)
+    retriever = EvaluateRetrieval(model, score_function="cos_sim")
+
+    # Build a reduced corpus of only BM25 candidate docs (much faster than full corpus)
+    candidate_corpus = {}
+    for qid, doc_scores in bm25_results.items():
+        for doc_id in doc_scores:
+            if doc_id in corpus:
+                candidate_corpus[doc_id] = corpus[doc_id]
+
+    # Run dense retrieval over candidate corpus
+    dense_results = retriever.retrieve(candidate_corpus, query_dict)
+
+    # Step 3: Combine BM25 + dense scores (score fusion)
+    combined_results = {}
+    for qid in bm25_results:
+        bm25_scores = bm25_results.get(qid, {})
+        dense_scores = dense_results.get(qid, {})
+
+        # Normalise BM25 scores to [0, 1]
+        bm25_max = max(bm25_scores.values(), default=1)
+        bm25_norm = {doc_id: score / bm25_max for doc_id, score in bm25_scores.items()}
+
+        # cos_sim is in [-1, 1], shift to [0, 1]
+        dense_norm = {doc_id: (score + 1) / 2 for doc_id, score in dense_scores.items()}
+
+        combined_results[qid] = combine_scores(bm25_norm, dense_norm, weight1=0.4, weight2=0.6)
+
+    return combined_results
 
 def save_results(results, output_file, run_name="neural_run"):
     with open(output_file, "w") as f:
@@ -60,7 +87,6 @@ def save_results(results, output_file, run_name="neural_run"):
             
             # sort documents by score descending
             ranked_docs = sorted(docs.items(), key=lambda x: x[1], reverse=True)
-            print(query_id, ranked_docs[:2])
             for rank, (doc_id, score) in enumerate(ranked_docs[:100], start=1):
                 f.write(f"{query_id} Q0 {doc_id} {rank} {score:.6f} {run_name}\n")
 

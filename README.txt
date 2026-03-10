@@ -5,7 +5,7 @@ STUDENT NAMES: Estelle Ngounou (300269700), Matsuru Hoshi (300228879), Max Wang 
 TO-DO:
 
 [X] Implement first neural retrieval model (10 points)
-[ ] Implement second neural retrieval model (10 points)
+[X] Implement second neural retrieval model (10 points)
 [ ] For the best method, produce Results file with all test queries. (10 points)
 [ ] MAP and P@10 score for each method, and highlight the best scores. (5 points)
 [ ] Provide task division (5 points)
@@ -15,6 +15,9 @@ TO-DO:
 TASK DIVISION:
 
 Estelle:
+- Implemented the second neural model, a sentence embeddding model based on Microsoft MPNet. Fixed the code to produce the initial
+results of Assignment 1 than rerank rather than do it from scratch with the neural models. 
+see neural model documentation: https://huggingface.co/sentence-transformers/all-mpnet-base-v2 
 
 Matsuru:
 - Implemented Universal Sentence Transformer, technically loaded with SentenceTransformer 

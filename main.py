@@ -112,13 +112,13 @@ beir_results = {}
 # print(f" Ranking complete in {end_time - start_time:.2f} seconds")
 
 # #Run 2: Full Text  
-# print("RUN 2 - FULL")
-# bm25_full = BM25(inverted_index_full, doc_lengths_title) 
-# results_file_title = "Results_Full.txt"
-# start_time = time.time()
-# writeResults(results_file_title, queries, bm25_full, top_k=100)
-# end_time = time.time()
-# print(f" Ranking complete in {end_time - start_time:.2f} seconds")
+print("RUN 2 - FULL")
+bm25_full = BM25(inverted_index_full, doc_lengths_title) 
+results_file_title = "Results_Full.txt"
+start_time = time.time()
+writeResults(results_file_title, queries, bm25_full, top_k=100)
+end_time = time.time()
+print(f" Ranking complete in {end_time - start_time:.2f} seconds")
 #model_name = "BeIR/sparta-msmarco-distilbert-base-v1"
 #model_type = "sparta"
 
@@ -131,7 +131,7 @@ model_type1 = "use"
 
 start_time = time.time()
 results_file1 = "Results_Model1.txt"
-results1 = rank_documents(documents, queries, model_name=model_name1, model_type=model_type1, rerank=False)  # Set rerank=True for Cross-Encoder models
+results1 = rank_documents(documents, queries, bm25_model=bm25_full, model_name=model_name1)  # Set rerank=True for Cross-Encoder models
 end_time = time.time()
 beir_ranking.save_results(results1, results_file1,"neural_run1")
 print(f"\nTime taken to rank documents: {end_time - start_time:.2f} seconds")
@@ -144,7 +144,7 @@ model_type2 = "use"
 
 start_time = time.time()
 results_file2 = "Results_Model2.txt"
-results2 = rank_documents(documents, queries, model_name=model_name2, model_type=model_type2, rerank=False)  # Set rerank=True for Cross-Encoder models
+results2 = rank_documents(documents, queries, bm25_model=bm25_full,model_name=model_name2)  # Set rerank=True for Cross-Encoder models
 end_time = time.time()
 beir_ranking.save_results(results2, results_file2, "neural_run2")
 print(f"\nTime taken to rank documents: {end_time - start_time:.2f} seconds")
