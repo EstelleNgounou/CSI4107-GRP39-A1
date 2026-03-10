@@ -1,4 +1,5 @@
-# beir_ranking.py
+#beir_ranking.py
+import beir
 from beir.retrieval import models
 from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
 from beir.reranking import Rerank
@@ -12,7 +13,7 @@ def load_model(model_name, model_type, documents=None, inverted_index=None, doc_
             raise ValueError("Documents, inverted_index, and doc_lengths are required for BM25.")
         return BM25(inverted_index, doc_lengths)
     elif model_type == "use":
-        return DRES(models.SentenceBERT(model_name), batch_size=16)
+        return DRES(models.SentenceBERT(model_name), batch_size=128)
     else:
         raise ValueError(f"Unknown model type: {model_type}")
     
@@ -32,13 +33,12 @@ def rank_documents(documents, queries, model_name="BM25", model_type="BM25", rer
     corpus = {}
     for doc in documents:
         corpus[doc['DOCNO']] = {
-            "title": " ".join(doc['HEAD']),
-            "text": " ".join(doc['TEXT'])
+            "text": " ".join(doc['HEAD']+doc['TEXT'])
         }
     
     # usa-qa uses dot product, bm25 scoring is None since already included in algorithm
     score_function = "dot" if model_type != "bm25" else None
-    retriever = EvaluateRetrieval(model, score_function=score_function)
+    retriever = EvaluateRetrieval(model, score_function=score_function, k_values=[100])
     
     # Convert queries to the correct format
     query_dict = {query['num']: " ".join(query['title'] + query['query'] + query['narrative']) for query in queries}
@@ -54,13 +54,15 @@ def rank_documents(documents, queries, model_name="BM25", model_type="BM25", rer
     
     return results
 
-def save_results(results, output_file):
-    beir_results = {}
-    for query_id, docs in results.items():
-        beir_results[query_id] = [(doc_id, float(score)) for doc_id, score in docs.items()]
-    
-    with open(output_file, 'w') as file:
-        json.dump(beir_results, file, indent=4)
+def save_results(results, output_file, run_name="neural_run"):
+    with open(output_file, "w") as f:
+        for query_id, docs in results.items():
+            
+            # sort documents by score descending
+            ranked_docs = sorted(docs.items(), key=lambda x: x[1], reverse=True)
+            print(query_id, ranked_docs[:2])
+            for rank, (doc_id, score) in enumerate(ranked_docs[:100], start=1):
+                f.write(f"{query_id} Q0 {doc_id} {rank} {score:.6f} {run_name}\n")
 
 # Example usage:
 # corpus, queries, qrels = GenericDataLoader("scifact/").load(split="test")

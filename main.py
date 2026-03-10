@@ -4,6 +4,7 @@ from preprocessing import *
 from indexing import *
 from ranking import *
 from beir_ranking import rank_documents
+import beir_ranking
 from utils import *
 import os
 
@@ -124,13 +125,28 @@ beir_results = {}
 # model_name = "msmarco-distilbert-base-v3"
 # model_type = "sentence-bert"
 
-model_name = "distiluse-base-multilingual-cased-v1"
-model_type = "use"
+#First neural model 
+model_name1 = "distiluse-base-multilingual-cased-v1"
+model_type1 = "use"
 
-results_file = "Results.txt"
-results = rank_documents(documents, queries, model_name=model_name, model_type=model_type, rerank=False)  # Set rerank=True for Cross-Encoder models
+start_time = time.time()
+results_file1 = "Results_Model1.txt"
+results1 = rank_documents(documents, queries, model_name=model_name1, model_type=model_type1, rerank=False)  # Set rerank=True for Cross-Encoder models
 end_time = time.time()
-save_results(results, results_file)
+beir_ranking.save_results(results1, results_file1,"neural_run1")
 print(f"\nTime taken to rank documents: {end_time - start_time:.2f} seconds")
 
-print(f"Ranking results written to {results_file}")
+print(f"Ranking results written to {results_file1}")
+
+#Second neural model
+model_name2 = "all-mpnet-base-v2"
+model_type2 = "use"
+
+start_time = time.time()
+results_file2 = "Results_Model2.txt"
+results2 = rank_documents(documents, queries, model_name=model_name2, model_type=model_type2, rerank=False)  # Set rerank=True for Cross-Encoder models
+end_time = time.time()
+beir_ranking.save_results(results2, results_file2, "neural_run2")
+print(f"\nTime taken to rank documents: {end_time - start_time:.2f} seconds")
+
+print(f"Ranking results written to {results_file2}")
