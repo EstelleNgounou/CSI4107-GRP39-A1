@@ -25,7 +25,7 @@ through BEIR. see documentation: https://github.com/beir-cellar/beir/blob/main/b
 
 Max: 
 
-Wanis: 
+Wanis: Produced Results file with all test queries result, Sample Results, and Discussion.
 -----------------------------------------------------------------------------------------------------------------------------
 FUNCTIONALITIES OF THE PROGRAMS:
 
@@ -97,44 +97,32 @@ least one of the query's words. For every matching document, we use BM25 to calc
 looking at how rare a word is(idf) and how often it appears. Afterwards, we use a min-max normalization algorithm 
 to scale the scores between 0.0 and 1.0 and sort the documents according to their new ranking.
 -----------------------------------------------------------------------------------------------------------------------------
-SYSTEM STATS AND RESULTS:
-1. Vocabulary Size:
-   45088 unique tokens.
-
-2. Sample of 100 Tokens:
-   ['.', 'of', 'the', 'and', ',', 'in', 'to', 'a', ')', '(', 'that', 'for', 'with', 'is', 'by', 'we', 'are', 'thi', 
-   'as', 'from', 'an', 'on', 'cell', 'these', 'wa', 'result', 'or', 'studi', 'be', 'were', 'use', 'have', 'at', 'not', 'which', 
-   'it', 'activ', 'but', ':', 'show', 'increas', 'express', 'function', 'also', 'ha', 'between', 'protein', 'effect', 'suggest', 
-   'associ', 'here', 'been', 'may', 'develop', 'role', '%', 'gene', 'factor', 'can', 'both', 'their', 'includ', 'human', 'control', 
-   'regul', 'diseas', ';', 'mechan', 'respons', 'identifi', 'patient', 'howev', 'data', 'than', 'differ', 'our', 'level', 'conclus', 
-   'dure', 'provid', 'method', 'more', 'model', 'other', 'compar', 'all', 'into', 'demonstr', 'analysi', 'after', 'treatment', 'import', 
-   'find', 'requir', 'two', 'target', 'induc', 'gener', 'potenti', 'specif']
-
-3. Sample Results (First 10 answers for the first 2 queries):
+Sample Results (First 10 answers for the first 2 queries):
+Below are the top 10 ranked documents for Query 1 and Query 3 as produced by our best-performing system (Model 2: all-mpnet-base-v2).
 
 Query ID: 1
-1. Doc 18953920 - Score: 1.0000
-2. Doc 21257564 - Score: 0.8849
-3. Doc 10906636 - Score: 0.7913
-4. Doc 7581911 - Score: 0.7834
-5. Doc 20155713 - Score: 0.7760
-6. Doc 36480032 - Score: 0.7625
-7. Doc 26071782 - Score: 0.7261
-8. Doc 13231899 - Score: 0.7088
-9. Doc 40584205 - Score: 0.6862
-10. Doc 12824568 - Score: 0.6818
+1. Doc 18953920 - Score: 0.744778
+2. Doc 21257564 - Score: 0.711530
+3. Doc 12824568 - Score: 0.682599
+4. Doc 7581911 - Score: 0.661389
+5. Doc 6308416 - Score: 0.658057
+6. Doc 21456232 - Score: 0.655665
+7. Doc 19651306 - Score: 0.624848
+8. Doc 3566945 - Score: 0.616978
+9. Doc 35008773 - Score: 0.616093
+10. Doc 16287725 - Score: 0.615968
 
 Query ID: 3
-1. Doc 2739854 - Score: 1.0000
-2. Doc 4414547 - Score: 0.9742
-3. Doc 4378885 - Score: 0.9309
-4. Doc 4632921 - Score: 0.9302
-5. Doc 3672261 - Score: 0.9187
-6. Doc 23389795 - Score: 0.9057
-7. Doc 14717500 - Score: 0.8955
-8. Doc 13519661 - Score: 0.8141
-9. Doc 19497526 - Score: 0.8118
-10. Doc 19058822 - Score: 0.7785
+1. Doc 2739854 - Score: 0.862783
+2. Doc 4378885 - Score: 0.855125
+3. Doc 14717500 - Score: 0.845749
+4. Doc 23389795 - Score: 0.838700
+5. Doc 4414547 - Score: 0.836027
+6. Doc 4632921 - Score: 0.835241
+7. Doc 1067605 - Score: 0.791619
+8. Doc 3672261 - Score: 0.790026
+9. Doc 1544804 - Score: 0.788349
+10. Doc 19058822 - Score: 0.769056
 
 -----------------------------------------------------------------------------------------------------------------------------
 MEAN AVERAGE PRECISION (MAP):
@@ -150,21 +138,30 @@ Precision (MAP) for two different indexing strategies.
 DISCUSSION:
 Our results clearly demonstrate the impact of document length and content on retrieval performance.
 
-1. Title Only vs. Full Text Comparison:
-There is a significant performance gap between indexing only the titles (MAP 0.2981) and indexing the full 
-abstract (MAP 0.6310). This is expected because scientific titles are often concise and may not contain the specific 
-natural language keywords used in a query. The abstract provides necessary context and a larger vocabulary, 
-allowing the BM25 algorithm to find more relevant matches that would otherwise be missed.
+1. Neural Methods vs. BM25 Comparison:
+Our results show that Model 2 (all-mpnet-base-v2) significantly outperformed our best Assignment 1 
+baseline, increasing the MAP from 0.6310 to 0.6626. This improvement of about 5% demonstrates the 
+effectiveness of semantic retrieval over lexical matching. While BM25 from Assignment 1 relies on exact 
+keyword overlap, the MPNet transformer model understands context. However, Model 1 performed slightly 
+worse than the baseline (0.6298). This suggests that using a "distilled" or multilingual model—while 
+faster—may lose the fine-grained nuance required for technical scientific abstracts, proving that model 
+selection is critical in neural IR.
 
-2. Comparison to Baseline:
-Our best run (Full Text) achieved a MAP score of 0.6310. This slightly outperforms the BM25 baseline 
-of 0.6012 in the provided "previous student report". This validates that our preprocessing pipeline and our 
-BM25 implementation are functioning correctly and efficiently.
+2. Precision at 10 (P@10) Analysis:
+Both models achieved a P@10 of approximately 0.09. This may seem low, but this is consistent with the 
+limited number of relevant documents per query in SciFact. Since many queries contain only 1-2 relevant 
+documents, the mathematical ceiling for P@10 is often 0.1. Our models successfully identified these few 
+relevant documents and placed them at the top.
 
-3. Algorithms and Optimizations:
-As detailed in the algorithms section, we optimized our index size 
-by applying stemming, which helped the system match words even if they had different endings. 
-This kept our index size manageable and made our search results more accurate. We also chose BM25 
-instead of standard TF-IDF because it handles long documents better, it stops long abstracts from ranking 
-too high just because they repeat a word, ensuring that the top results are actually the most relevant.
+3. Strategic Optimizations: Two-Stage Reranking:
+To optimize for computational efficiency, we implemented a two-stage reranking pipeline. We used our 
+Assignment 1 BM25 system to retrieve an initial candidate set of the top 100 documents, then applied 
+the neural models only to those candidates. This optimization allowed us to achieve significantly 
+higher precision while keeping the system's runtime manageable on a standard CPU.
+
+4. Future Optimizations:
+For queries where the neural model failed to improve upon the baseline, the issue was likely a vocabulary 
+gap caused by specific scientific terminology not present in the transformer's pre-training data. 
+A potential future optimization is Pseudo-Relevance Feedback (PRF) to expand the query before the neural 
+pass, ensuring the model has a richer context to work with.
 -----------------------------------------------------------------------------------------------------------------------------
