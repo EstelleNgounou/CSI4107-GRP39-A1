@@ -101,34 +101,21 @@ doc_lengths_full = calculate_document_lengths(documents)
 
 beir_results = {}
 
-
-#Run 1: Title Only
-# print("RUN 1 - TITLE ONLY")  
-# bm25_title = BM25(inverted_index_title, doc_lengths_title) 
-# results_file_title = "Results_Title.txt"
-# start_time = time.time()
-# writeResults(results_file_title, queries, bm25_title, top_k=100)
-# end_time = time.time()
-# print(f" Ranking complete in {end_time - start_time:.2f} seconds")
-
-# #Run 2: Full Text  
-print("RUN 2 - FULL")
+# BM25 Scoring   
+print("\nRanking with BM25...")
 bm25_full = BM25(inverted_index_full, doc_lengths_title) 
 results_file_title = "Results_Full.txt"
 start_time = time.time()
 writeResults(results_file_title, queries, bm25_full, top_k=100)
 end_time = time.time()
-print(f" Ranking complete in {end_time - start_time:.2f} seconds")
-#model_name = "BeIR/sparta-msmarco-distilbert-base-v1"
-#model_type = "sparta"
-
-# model_name = "msmarco-distilbert-base-v3"
-# model_type = "sentence-bert"
+print(f"\nTime taken to rank documents: {end_time - start_time:.2f} seconds")
+print(f"Ranking results written to {results_file_title}")
 
 #First neural model 
 model_name1 = "distiluse-base-multilingual-cased-v1"
 model_type1 = "use"
 
+print(f"\nRanking with Universal Sentence Transformer 1 ({model_name1})...")
 start_time = time.time()
 results_file1 = "Results_Model1.txt"
 results1 = rank_documents(documents, queries, bm25_model=bm25_full, model_name=model_name1)  # Set rerank=True for Cross-Encoder models
@@ -142,6 +129,7 @@ print(f"Ranking results written to {results_file1}")
 model_name2 = "all-mpnet-base-v2"
 model_type2 = "use"
 
+print(f"\nRanking with Universal Sentence Transformer 2 ({model_name2})...")
 start_time = time.time()
 results_file2 = "Results_Model2.txt"
 results2 = rank_documents(documents, queries, bm25_model=bm25_full,model_name=model_name2)  # Set rerank=True for Cross-Encoder models

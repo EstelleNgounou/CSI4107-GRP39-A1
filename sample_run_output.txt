@@ -1,0 +1,22 @@
+Parsing documents
+Loading preprocessed documents
+Loading preprocessed queries
+
+Ranking with BM25...
+100.00%|██████████████████████████████████████████████████| 547/547
+Time taken to rank documents: 31.44 seconds
+Ranking results written to Results_Full.txt
+
+Ranking with Universal Sentence Transformer 1 (distiluse-base-multilingual-cased-v1)...
+Batches: 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 9/9 [00:01<00:00,  4.80it/s]
+Batches: 100%|████████████████████████████████████████████████████████████████████████████████████████████| 81/81 [00:26<00:00,  3.10it/s]
+
+Time taken to rank documents: 63.85 seconds
+Ranking results written to Results_Model1.txt
+
+Ranking with Universal Sentence Transformer 2 (all-mpnet-base-v2)...
+Batches: 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 9/9 [00:03<00:00,  2.55it/s]
+Batches: 100%|████████████████████████████████████████████████████████████████████████████████████████████| 81/81 [03:33<00:00,  2.64s/it]
+
+Time taken to rank documents: 250.96 seconds
+Ranking results written to Results_Model2.txt
