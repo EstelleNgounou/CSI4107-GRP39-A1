@@ -6,7 +6,7 @@ TO-DO:
 
 [X] Implement first neural retrieval model (10 points)
 [X] Implement second neural retrieval model (10 points)
-[ ] For the best method, produce Results file with all test queries. (10 points)
+[X] For the best method, produce Results file with all test queries. (10 points)
 [ ] MAP and P@10 score for each method, and highlight the best scores. (5 points)
 [ ] Provide task division (5 points)
 [ ] Write a Readme, accounts for (15 points)
