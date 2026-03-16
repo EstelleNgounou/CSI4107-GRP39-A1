@@ -8,8 +8,8 @@ TO-DO:
 [X] Implement second neural retrieval model (10 points)
 [X] For the best method, produce Results file with all test queries. (10 points)
 [X] MAP and P@10 score for each method, and highlight the best scores. (5 points)
-[ ] Provide task division (5 points)
-[ ] Write a Readme, accounts for (15 points)
+[X] Provide task division (5 points)
+[X] Write a Readme, accounts for (15 points)
 
 -----------------------------------------------------------------------------------------------------------------------------
 TASK DIVISION:
@@ -23,7 +23,7 @@ Matsuru:
 - Implemented Universal Sentence Transformer, technically loaded with SentenceTransformer 
 through BEIR. see documentation: https://github.com/beir-cellar/beir/blob/main/beir/retrieval/models/sentence_bert.py
 
-Max: 
+Max: MAP score, P@10 score, algorithm/data structure explanations.
 
 Wanis: Produced Results file with all test queries result, Sample Results, and Discussion.
 -----------------------------------------------------------------------------------------------------------------------------
@@ -80,27 +80,19 @@ $ python main.py
 -----------------------------------------------------------------------------------------------------------------------------
 ALGORITHMS EXPLANATIONS:
 
-Step 1, Preprocessing: 
+We begin with a lexical retrieval pass using BM25. For every query token that appears in the inverted index, the algorithm 
+locates the documents containing that token, computes the BM25 contribution of that token to each document, and sums these 
+contributions to form a raw relevance score per document. The documents are sorted by that score and the top K documents 
+are selected as a candidate set. A reduced candidate corpus is then built by collecting the full texts of only the top K 
+documents across all queries. This reduces the number of documents that need to be processed by the neural model. We then 
+move on to the neural reranking step, where we encode each query and each candidate document independently into fixed size 
+semantic vectors using a pre-trained sentence-embedding model. It then computes a similarity measure between each query 
+vector and its candidate document vectors(cosine similarity). Because the similarity measure ranges from negative to positive, 
+the values are shifted into nonnegative range. We also normalize the lexical scores per query, by scaling them into a common 
+0-1 range, and align the neural similarity scores to the same range. We then fuse the two signals by taking a weighted sum 
+for each candidate document, noting that documents only present in one signal still contribute through that signal's weighted 
+value. The fused scores are then sorted to produce the final ranked list.
 
-To convert the raw text into a list of clean words, we first normalize the text, ensuring that the system is not 
-case-sensitive. We then use NLTK's tokenizer to convert the text into discrete linguistic units. Following this,
-we use the Porter Stemmer to strip texts of suffixes and reduce words into a common base/root word. 
-We finally filter out specific meta-tokens and placeholders, leaving us with our preprocessed documents/queries 
-containing all the tokens.
-
-Step 2, Indexing:
-
-The algorithm goes through the entire preprocessed list of documents once, and for every word processed, 
-the system will note the document number the word appears in, as well as the frequency of the word. Making use 
-of nested dictionaries, this will allow the system to find any word in constant time. Additionally, added an inverted 
-index for only titles as required.
-
-Step 3, Retrieval and Ranking:
-
-When a query is entered, the system looks at the inverted index and finds only the documents that have at 
-least one of the query's words. For every matching document, we use BM25 to calculate a relevance score by 
-looking at how rare a word is(idf) and how often it appears. Afterwards, we use a min-max normalization algorithm 
-to scale the scores between 0.0 and 1.0 and sort the documents according to their new ranking.
 -----------------------------------------------------------------------------------------------------------------------------
 Sample Results (First 10 answers for the first 2 queries):
 Below are the top 10 ranked documents for Query 1 and Query 3 as produced by our best-performing system (Model 2: all-mpnet-base-v2).
@@ -130,15 +122,17 @@ Query ID: 3
 10. Doc 19058822 - Score: 0.769056
 
 -----------------------------------------------------------------------------------------------------------------------------
-MEAN AVERAGE PRECISION (MAP):
+MEAN AVERAGE PRECISION (MAP) and P@10:
 We evaluated our system using the provided 'test.tsv' relevance judgments (Gold Standard) to calculate the Mean Average 
-Precision (MAP) for two different indexing strategies.
+Precision (MAP) and P@10.
 
-1. Run 1 (Title Only):
-   MAP Score: 0.2981
+1. Model 1:
+   MAP Score: 0.6298
+   P@10 Score: 0.0895
 
-2. Run 2 (Title + Abstract Text):
-   MAP Score: 0.6310
+2. Model 2:
+   MAP Score: 0.6626
+   P@10 Score: 0.0941
 -----------------------------------------------------------------------------------------------------------------------------
 DISCUSSION:
 Our results clearly demonstrate the impact of document length and content on retrieval performance.
