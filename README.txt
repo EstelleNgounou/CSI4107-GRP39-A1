@@ -7,7 +7,7 @@ TO-DO:
 [X] Implement first neural retrieval model (10 points)
 [X] Implement second neural retrieval model (10 points)
 [X] For the best method, produce Results file with all test queries. (10 points)
-[ ] MAP and P@10 score for each method, and highlight the best scores. (5 points)
+[X] MAP and P@10 score for each method, and highlight the best scores. (5 points)
 [ ] Provide task division (5 points)
 [ ] Write a Readme, accounts for (15 points)
 
@@ -16,7 +16,7 @@ TASK DIVISION:
 
 Estelle:
 - Implemented the second neural model, a sentence embeddding model based on Microsoft MPNet. Fixed the code to produce the initial
-results of Assignment 1 than rerank rather than do it from scratch with the neural models. 
+results of Assignment 1 then rerank rather than do it from scratch with the neural models. 
 see neural model documentation: https://huggingface.co/sentence-transformers/all-mpnet-base-v2 
 
 Matsuru:
@@ -34,8 +34,13 @@ This program does the following things:
  - Preprocesses the tokenized text
  - Creates an inverted index to allow searching
  - Searches and ranks documents using the invertex index with BM25 ranking
+ Reranks BM25 candidates using two neural sentence embedding models:
+    1. distiluse-base-multilingual-cased-v1 (multilingual bi-encoder baseline)
+   2. all-mpnet-base-v2 (high-performance English sentence embedding model)
+ - Combines BM25 and neural scores via score fusion for final ranking
 
-A list compiling results for a given set of queries in TREC format is outputted.
+A list compiling results for a given set of queries in TREC format is outputted
+for each of the three runs (BM25 full text, Neural Model 1, Neural Model 2).
 -----------------------------------------------------------------------------------------------------------------------------
 INSTRUCTIONS ON HOW TO RUN THE PROGRAMS:
 
